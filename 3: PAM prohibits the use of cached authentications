@@ -1,0 +1,16 @@
+Check Text:
+If smart card authentication is not being used on the system, this s Not Applicable. 
+ 
+Verify that PAM prohibits the use of cached authentications after one day with the following command: 
+ 
+$ sudo grep offline_credentials_expiration /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf 
+ 
+offline_credentials_expiration = 1 
+ 
+If "offline_credentials_expiration" is not set to a value of "1" in "/etc/sssd/sssd.conf" or in a file with a name ending in .conf in the "/etc/sssd/conf.d/" directory, this is a finding.
+Fix Text:
+Configure PAM to prohibit the use of cached authentications after one day. Add or change the following line in "/etc/sssd/sssd.conf" just below the line "[pam]": 
+ 
+offline_credentials_expiration = 1 
+ 
+Note: It is valid for this configuration to be in a file with a name that ends with ".conf" and does not begin with a "." in the "/etc/sssd/conf.d/" directory instead of the "/etc/sssd/sssd.conf" file.

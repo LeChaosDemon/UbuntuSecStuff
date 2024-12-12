@@ -1,0 +1,44 @@
+Check Text:
+Verify the audit event multiplexor is configured to offload audit records to a different system or storage media from the system being audited. 
+ 
+Check that audisp-remote plugin is installed: 
+ 
+$ sudo dpkg -s audispd-plugins 
+ 
+If status is "not installed", this is a finding. 
+ 
+Check that the records are being offloaded to a remote server with the following command: 
+ 
+$ sudo grep -i active /etc/audisp/plugins.d/au-remote.conf 
+ 
+active = yes 
+ 
+If "active" is not set to "yes", or the line is commented out, this is a finding. 
+ 
+Check that audisp-remote plugin is configured to send audit logs to a different system: 
+ 
+$ sudo grep -i ^remote_server /etc/audisp/audisp-remote.conf  
+ 
+remote_server = 192.168.122.126 
+ 
+If the "remote_server" parameter is not set, is set with a local address, or is set with an invalid address, this is a finding.
+Fix Text:
+Configure the audit event multiplexor to offload audit records to a different system or storage media from the system being audited. 
+ 
+Install the audisp-remote plugin: 
+ 
+$ sudo apt-get install audispd-plugins -y 
+ 
+Set the audisp-remote plugin as active by editing the "/etc/audisp/plugins.d/au-remote.conf" file: 
+ 
+$ sudo sed -i -E 's/active\s*=\s*no/active = yes/' /etc/audisp/plugins.d/au-remote.conf 
+ 
+Set the address of the remote machine by editing the "/etc/audisp/audisp-remote.conf" file: 
+ 
+$ sudo sed -i -E 's/(remote_server\s*=).*/\1 <remote addr>/' /etc/audisp/audisp-remote.conf 
+ 
+where <remote addr> must be substituted by the address of the remote server receiving the audit log. 
+ 
+Make the audit service reload its configuration files: 
+ 
+$ sudo systemctl restart auditd.service

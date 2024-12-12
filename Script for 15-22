@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# exit on any error
+set -e
+
+# modify /etc/pam.d/common-password for password policy
+configure_password_policy() {
+    echo "Configuring password policy..."
+
+    # Backup the existing PAM common-password file
+    cp /etc/pam.d/common-password /etc/pam.d/common-password.bak
+
+    # Configure password policy (e.g., minimum length, complexity)
+    sed -i 's/^password .*/retry=4 minlen=9 difok=4 lcredit=-2 ucredit=-2 dcredit=-1 ocredit=-1 reject_username enforce_for_root/'
+/etc/pam.d/common-password
+    echo "Password policy configured with minimum length 9."
+}
+
+#  modify /etc/pam.d/common-account for account lockout
+configure_account_lockout() {
+    echo "Configuring account lockout..."
+
+    # Backup the existing PAM common-account file
+    cp /etc/pam.d/common-account /etc/pam.d/common-account.bak
+
+    # Enable account lockout after 5 failed attempts and lockout duration of 300 seconds
+    sed -i '/^account/ a\account required pam_tally2.so onerr=fail deny=5 unlock_time=300' /etc/pam.d/common-account
+    echo "Account lockout policy configured: 5 failed login attempts, 5-minute lockout."
+}
+
+#  modify /etc/pam.d/common-auth for authentication
+configure_authentication_policy() {
+    echo "Configuring authentication policy..."
+
+    # Backup the existing PAM common-auth file
+    cp /etc/pam.d/common-auth /etc/pam.d/common-auth.bak
+
+    # Ensure account is locked after 5 failed attempts
+    sed -i '/^auth/ a\auth required pam_tally2.so onerr=fail deny=5 unlock_time=300' /etc/pam.d/common-auth
+    echo "Authentication policy configured: 5 failed login attempts, 5-minute lockout."
+}

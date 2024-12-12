@@ -1,0 +1,13 @@
+# Don't do for Cypat!!
+
+Check Text:
+To verify the time zone is configured to use UTC or GMT, run the following command.  
+ 
+$ timedatectl status | grep -i "time zone" 
+Timezone: UTC (UTC, +0000) 
+ 
+If "Timezone" is not set to UTC or GMT, this is a finding.
+Fix Text:
+To configure the system time zone to use UTC or GMT, run the following command, replacing [ZONE] with UTC or GMT: 
+ 
+$ sudo timedatectl set-timezone [ZONE]

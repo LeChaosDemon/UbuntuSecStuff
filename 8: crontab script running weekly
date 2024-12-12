@@ -1,0 +1,18 @@
+Check Text:
+Note: If this is an interconnected system, this is Not Applicable. 
+ 
+Verify there is a script that offloads audit data and that script runs weekly. 
+ 
+Check if there is a script in the "/etc/cron.weekly" directory that offloads audit data: 
+ 
+# sudo ls /etc/cron.weekly 
+ 
+audit-offload 
+ 
+Check if the script inside the file does offloading of audit logs to external media. 
+ 
+If the script file does not exist or does not offload audit logs, this is a finding.
+Fix Text:
+Create a script that offloads audit logs to external media and runs weekly. 
+ 
+The script must be located in the "/etc/cron.weekly" directory.
